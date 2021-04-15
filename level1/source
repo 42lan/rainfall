@@ -1,0 +1,5 @@
+START
+	DEFINE array of 76
+	GET a line from a stream
+	RETURN
+END
