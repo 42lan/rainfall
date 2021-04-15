@@ -1,0 +1,9 @@
+START
+	CONVERT first argument to integer
+	IF integer is not equal to 0x1a7 (423) THEN
+		WRITE "No !"
+	ELSE
+		SET real UID and GID to level1
+		EXECUTE shell as new process
+	RETURN 0
+END
