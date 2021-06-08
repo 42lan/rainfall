@@ -13,6 +13,7 @@ level0@192.168.1.75's password: level0
 RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
 No RELRO        No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   /home/user/level0/level0
 ```
+A `SUID` executable is located in the home directory.
 ```shell
 level0@RainFall:~$ ls -l
 total 732
@@ -33,7 +34,7 @@ Breakpoint 1 at 0x8048ec3
 Starting program: /home/user/level0/level0
 
 Breakpoint 1, 0x08048ec3 in main ()
-(gdb) disas
+(gdb) disassemble
 Dump of assembler code for function main:
    0x08048ec0 <+0>:	push   %ebp
    0x08048ec1 <+1>:	mov    %esp,%ebp
@@ -47,6 +48,10 @@ Dump of assembler code for function main:
    0x08048ed9 <+25>:	cmp    $0x1a7,%eax      # 0x1a7 = 423
    0x08048ede <+30>:	jne    0x8048f58 <main+152>
 ```
+On line `0x08048ede <+30>` there is a conditional jump.<br>
+If condition Not Equal is satisfied, the control flow is transferred to `0x8048f58 <main+152>` and program exits.<br>
+Therefore, to bypass this jump, entred value needs to be equal to 0x1a7 or 423 in decimal.<br>
+Run the binary with first argumet equal to 423.
 ```shell
 level0@RainFall:~$ ./level0 423
 $
