@@ -1,4 +1,10 @@
 START
+	WRITE on stdout "Good... Wait what?\n"
+	SYSTEM CALL "/bin/sh"
+	RETURN
+END
+
+START
 	DEFINE array of 76
 	GET a line from a stream
 	RETURN
