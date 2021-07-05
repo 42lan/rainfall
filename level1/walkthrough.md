@@ -146,3 +146,21 @@ End of assembler dump.
 (gdb) x/s 0x8048584
 0x8048584:	 "/bin/sh"
 ```
+
+In order to modify the application at runtime, it is necessary to run the program and then stop it again before it finishes cleanly.
+So set breakpoint on `main`, then move the program's execution to another part of the program. Specifically, resume execution at the start of `run()`
+```gdb
+(gdb) break main
+Breakpoint 1 at 0x8048483
+(gdb) run
+Starting program: /home/user/level1/level1
+
+Breakpoint 1, 0x08048483 in main ()
+(gdb) jump run
+Continuing at 0x804844a.
+Good... Wait what?
+$ whoami
+level1
+$
+```
+Upon this, `run()` is successfully ran, but SUID permission of `level2` are lost.
