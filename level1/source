@@ -5,7 +5,7 @@ START
 END
 
 START
-	DEFINE array of 76
+	DEFINE array of 76 char
 	GET a line from a stream
 	RETURN
 END
