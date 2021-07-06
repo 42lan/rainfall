@@ -1,0 +1,12 @@
+START p()
+	CALL fflush()
+	CALL gets()
+	printf()
+	puts()
+	strdup()
+END
+
+START main()
+	CALL p()
+	RETURN
+END
