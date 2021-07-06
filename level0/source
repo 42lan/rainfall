@@ -1,4 +1,4 @@
-START
+START main()
 	CONVERT first argument to integer
 	IF integer is not equal to 0x1a7 (423) THEN
 		WRITE "No !"

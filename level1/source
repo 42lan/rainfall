@@ -1,10 +1,10 @@
-START
+START run()
 	WRITE on stdout "Good... Wait what?\n"
 	SYSTEM CALL "/bin/sh"
 	RETURN
 END
 
-START
+START main()
 	DEFINE array of 76 char
 	GET a line from a stream
 	RETURN
