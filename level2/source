@@ -1,9 +1,11 @@
 START p()
-	CALL fflush()
-	CALL gets()
-	printf()
-	puts()
-	strdup()
+	DEFINE array of 104
+	CALL fflush(stdout)
+	CALL gets(str)
+	if (number & 0xb0000000)
+		printf(number)
+	puts(str)
+	strdup(str)
 END
 
 START main()

