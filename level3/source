@@ -1,0 +1,16 @@
+DEFINE m
+
+START v()
+	DEFINE str[536]
+	CALL fgets(str,512,1)
+	CALL printf(str)
+	IF (m == 0x40)
+		CALL printf("Wait what?!\n")
+		CALL system("bin/sh")
+	RETURN
+END
+
+START main()
+	CALL v()
+	RETURN
+END
