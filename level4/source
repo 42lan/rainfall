@@ -1,0 +1,19 @@
+DEFINE m
+
+START p(arg)
+	CALL printf(arg)
+END
+
+START n()
+	DEFINE str[536]
+	CALL fgets(str, 512, 1)
+	CALL p(str)
+	IF (m == 0x1025544)
+		CALL system("/bin/cat /home/user/level5/.pass")
+	RETURN
+END
+
+START main()
+	CALL n()
+	RETURN
+END
