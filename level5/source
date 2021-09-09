@@ -1,0 +1,18 @@
+DEFINE m
+
+START p()
+	CALL system("/bin/sh")
+	CALL _exit(1)
+END
+
+START n()
+	DEFINE str[536]
+	CALL fgets(str, 512, 1)
+	CALL printf(str)
+	CALL exit(1)
+END
+
+START main()
+	CALL n()
+	RETURN
+END
