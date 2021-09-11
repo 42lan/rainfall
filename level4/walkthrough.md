@@ -2,7 +2,7 @@ Login as `level4`.
 ```shell
 ┌──$ [~/42/2021/rainfall]
 └─>  ssh 192.168.1.28 -p 4242 -l level4
-level3@192.168.1.28's password: b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+level4@192.168.1.28's password: b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
 ```
 A `SUID` executable is located in the home directory.
 ```shell
