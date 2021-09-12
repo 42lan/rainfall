@@ -1,0 +1,18 @@
+START n()
+	CALL system("/bin/cat /home/user/level7/.pass")
+	RETURN
+END
+
+START m()
+	CALL puts("Nope")
+	RETURN
+END
+
+START main()
+	DEFINE str[32]
+	CALL malloc()
+	CALL malloc()
+	CALL strcpy()
+	CALL $esp
+	RETURN
+END
