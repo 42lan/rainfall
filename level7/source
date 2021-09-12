@@ -1,0 +1,21 @@
+DEFINE c[80]
+
+START m()
+	tloc = time(0)
+	CALL printf("%s - %d\n", c, tloc)
+	RETURN
+END
+
+START main()
+	DEFINE str[32]
+	CALL malloc(8)
+	CALL malloc(8)
+	CALL malloc(8)
+	CALL malloc(8)
+	CALL strcpy()
+	CALL strcpy()
+	CALL fd=fopen("/home/user/level8/.pass", "r")
+	CALL fgets(c, 68, fd)
+	CALL puts("~~")
+	RETURN 0
+END
