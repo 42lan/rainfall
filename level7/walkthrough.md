@@ -20,3 +20,21 @@ total 8
 Examing binary with GDB shows that inside `main()` function it opens `/home/user/level8/.pass` file, then reads 68 bytes from the given stream and stores them in the string `c` defined as global variable.
 On the other hand the content of `c` variable is printed inside `m()` function.
 
+Function `m()` can be called inside GDB simply by changing `EIP` register pointing to start of `m()` function.
+```gdb
+(gdb) break *main+202
+Breakpoint 1 at 0x80485eb
+(gdb) run AAAA BBBB
+Starting program: /home/user/level7/level7 AAAA BBBB
+
+Breakpoint 1, 0x080485eb in main ()
+(gdb) print $eip
+$1 = (void (*)()) 0x80485eb <main+202>
+(gdb) set $eip=0x080484f4
+(gdb) continue
+Continuing.
+ - 1630930163
+
+Program received signal SIGSEGV, Segmentation fault.
+0x08049960 in c ()
+```
