@@ -38,3 +38,22 @@ Continuing.
 Program received signal SIGSEGV, Segmentation fault.
 0x08049960 in c ()
 ```
+
+
+
+
+0x0804a008 -> $esp+0x1c == str1
+```gdb
+(gdb) x/16x 0x0804a008
+
+			            fnPtr
+            str1[0]     str1[1]     str1[2]     str1[3]
+0x804a008:	0x00000001	0x0804a018	0x00000000	0x00000011
+            str1[4]     str1[5]     str1[6]     str1[7]
+0x804a018:	0x41414141	0x41414141	0x41414141	0x00000000
+			            fnPtr
+            str2[0]     str2[1]     str2[2]     str2[3]
+0x804a028:	0x00000002	0x0804a038	0x00000000	0x00000011
+            str2[4]     str2[5]     str2[6]     str2[7]
+0x804a038:	0x42424242	0x42424242	0x00000000	0x00020fc
+```
