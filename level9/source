@@ -1,0 +1,17 @@
+START _ZN1N13setAnnotationEPc()
+    CALL strlen()
+    CALL memcpy()
+END
+
+START main(int ac, char **av)
+    IF ac > 1
+       CALL _Znwj(108) 
+       CALL _ZN1NC2Ei(0, 5)
+       CALL _Znwj()
+       CALL _ZN1NC2Ei()
+       CALL _ZN1N13setAnnotationEPc()
+       CALL edx
+       CALL edx
+
+    CALL exit(1)
+END
