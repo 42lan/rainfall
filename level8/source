@@ -1,0 +1,23 @@
+DEFINE *auth;
+DEFINE *service;
+
+START main()
+    DEFINE str
+    WHILE TRUE
+        CALL printf("%p, %p \n", auth, service);
+        IF (fgets(str 128, stdin) == NULL)
+            BREAK
+        IF str EQUAL to "auth "
+            auth = malloc(4)
+            strcpy(auth, str + 5)
+        IF str EQUAL to "reset"
+            CALL free(auth)
+        IF str EQUAL to "service"
+            service = strdup(str + 7)
+        IF str EQUAL to "login"
+            IF auth[8] EQUAL 0
+                PRINT "Password:\n"
+            ELSE
+                CALL system("/bin/sh")
+    RETURN
+END
