@@ -5,7 +5,7 @@ START main()
     DEFINE str
     WHILE TRUE
         CALL printf("%p, %p \n", auth, service);
-        IF (fgets(str 128, stdin) == NULL)
+        IF (fgets(str, 128, stdin) == NULL)
             BREAK
         IF str EQUAL to "auth "
             auth = malloc(4)
