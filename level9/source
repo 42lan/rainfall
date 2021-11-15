@@ -1,10 +1,10 @@
 START _ZN1N13setAnnotationEPc()
-    CALL strlen()
-    CALL memcpy()
+    len = strlen(av[1])
+    memcpy(0x0804a00c, av[1], len)
 END
 
 START main(int ac, char **av)
-    IF ac > 1
+    IF ac > 1 // main+10
        CALL _Znwj(108) 
        CALL _ZN1NC2Ei(0, 5)
        CALL _Znwj()
@@ -13,5 +13,5 @@ START main(int ac, char **av)
        CALL edx
        CALL edx
 
-    CALL exit(1)
+    CALL exit(1) // main+23
 END
