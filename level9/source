@@ -1,17 +1,19 @@
 START _ZN1N13setAnnotationEPc()
-    len = strlen(av[1])
-    memcpy(0x0804a00c, av[1], len)
+    memcpy(var1 + 4, av[1], strlen(av[1]))
+END
+
+START _ZN1NC2Ei(addr, value)
+    *addr = &operatorPlus
+    *(addr + 104) = value
 END
 
 START main(int ac, char **av)
-    IF ac > 1 // main+10
-       CALL _Znwj(108) 
-       CALL _ZN1NC2Ei(0, 5)
-       CALL _Znwj()
-       CALL _ZN1NC2Ei()
-       CALL _ZN1N13setAnnotationEPc()
-       CALL edx
-       CALL edx
-
-    CALL exit(1) // main+23
+    IF ac == 1 // main+10
+        CALL exit(1) // main+23
+    var1 = new(108)
+    CALL _ZN1NC2Ei(var1, 5)
+    var2 = new(108)
+    CALL _ZN1NC2Ei(var2, 6)
+    CALL _ZN1N13setAnnotationEPc(var1, av[1])
+    CALL edx
 END
