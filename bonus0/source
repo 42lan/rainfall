@@ -1,0 +1,23 @@
+PROMPT " - "    # \x20\x2d\x20\x00
+SPACE " "       # \x20\x00
+
+START p()
+    CALL puts()
+    CALL read()
+    CALL strchr()
+    CALL strncpy()
+END
+
+START pp(char *str)
+    CALL p()
+    CALL p()
+    CALL strcpy()
+    CALL strcat()
+END
+
+START main()
+    char str[54]
+    CALL pp(str)
+    CALL puts(str)
+    return 0
+END
