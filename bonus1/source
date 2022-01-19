@@ -1,0 +1,10 @@
+START main()
+    [64]
+    ... = atoi(av[1])
+    if ( ... <= 9 )
+        memcpy(dst, av[2], len*4)
+        if ( ... == 0x574f4c46 ) // 0x574f4c46 = WOLF
+            execl("/bin/sh", "sh", 0x0)
+        return 0
+    return 1
+END main()
