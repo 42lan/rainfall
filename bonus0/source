@@ -17,7 +17,7 @@ START pp(char *str)
     CALL p(buf1, PROMPT)
     CALL p(buf2, PROMPT)
     CALL strcpy(str, buf1)  # Copy BUF1 into STR
-    str[-1] = ' ';         # Overwrite \0 of STR with space '' to separate two inputs
+    str[-1] = ' ';          # Overwrite \0 of STR with space '' to separate two inputs
     CALL strcat(str, buf2)  # Concatenate BUF2 to STR
 END
 
