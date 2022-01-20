@@ -1,0 +1,10 @@
+START greetuser()
+END
+
+START main()
+    IF ac NOT EQUAL 3
+        RETURN 1
+    IF getenv("LANG") NOT EQUAL "fi"
+
+    RETURN 5 + len(av[1])
+END
