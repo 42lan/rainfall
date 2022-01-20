@@ -1,10 +1,11 @@
 START main()
-    [64]
-    ... = atoi(av[1])
-    if ( ... <= 9 )
-        memcpy(dst, av[2], len*4)
-        if ( ... == 0x574f4c46 ) // 0x574f4c46 = WOLF
-            execl("/bin/sh", "sh", 0x0)
-        return 0
-    return 1
+    DECLARE array[60]
+    DECLARE integer
+
+    integer = atoi(av[1])
+    IF integer <= 9
+        IF integer EQUAL TO 0x574f4c46 // 0x574f4c46 = WOLF
+            EXECUTE execl("/bin/sh", "sh", 0x0)
+            RETURN 0
+    RETURN 1
 END main()
