@@ -1,10 +1,27 @@
+language = 0
+
 START greetuser()
+    DEFINE ARRAY str[88]
+    IF language EQUAL TO 1
+        greet = "Hyvää päivää "
+    ELSE IF language EQUAL TO 2
+        greet = "Goedemiddag! "
+    ELSE
+        greet = "Hello "
+    str = strcat(greet, p_av[1])
+    puts(str)
 END
 
-START main()
+START main(ac, av)
     IF ac NOT EQUAL 3
         RETURN 1
-    IF getenv("LANG") NOT EQUAL "fi"
-
-    RETURN 5 + len(av[1])
+    CALL strncpy(0xbffff680, av[1], 40) // copy first argument into str1
+    CALL strncpy(0xbffff6a8, av[2], 32) // copy second argument into str2
+    CALL envLang = getenv("LANG")
+    IF envLang EQUAL TO "fi" // memcmp(envLang, "fi", 2)
+        SET language TO 1
+    ELSE IF envLang EQUAL TO "nl" // memcmp(envLang, "nl", 2)
+        SET language TO 2
+    CALL greetuser()
+    RETURN // return length of greating with space + lenth of first argument + new line
 END
