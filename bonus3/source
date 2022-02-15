@@ -1,0 +1,13 @@
+START main()
+    DEFINE array[127]
+    DEFINE buf[33] = {0}
+    fd = fopen("/home/user/bonus3/bonus3", "r")
+    IF fd EQUAL TO 0 OR ac NOT EQUAL TO 2
+        RETURN -1
+    CALL fread(buf, 1, 0x42, fd)
+    IF strcmp(buf16, av[1]) EQUAL TO 0
+        CALL execl("/bin/sh", "sh", 0)
+    ELSE
+        CALL puts(buf)
+    RETURN 0
+END
