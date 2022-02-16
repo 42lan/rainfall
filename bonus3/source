@@ -1,13 +1,17 @@
 START main()
     DEFINE array[127]
-    DEFINE buf[33] = {0}
+    DEFINE buf16[16] = {0}
+    DEFINE buf66[66] = {0}
     fd = fopen("/home/user/bonus3/bonus3", "r")
     IF fd EQUAL TO 0 OR ac NOT EQUAL TO 2
         RETURN -1
-    CALL fread(buf, 1, 0x42, fd)
+    CALL fread(buf16, 1, 0x42, fd)
+    CALL buf16[atoi(av[1])] = 0x0
+    CALL fread(buf66, 1, 0x41, fd)
+    CALL fclose(fd)
     IF strcmp(buf16, av[1]) EQUAL TO 0
         CALL execl("/bin/sh", "sh", 0)
     ELSE
-        CALL puts(buf)
+        CALL puts(buf66)
     RETURN 0
 END
