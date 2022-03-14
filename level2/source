@@ -1,5 +1,6 @@
 START p()
-	DEFINE array of 104
+	DEFINE str of 76
+	DEFINE number
 	CALL fflush(stdout)
 	CALL gets(str)
 	if (number & 0xb0000000)
