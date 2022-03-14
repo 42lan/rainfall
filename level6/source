@@ -9,10 +9,10 @@ START m()
 END
 
 START main()
-	DEFINE str[32]
-	CALL malloc()
-	CALL malloc()
-	CALL strcpy()
-	CALL $esp
+	CALL buf1 = malloc(64)
+	CALL buf2 = malloc(4)
+	*buf2 = m
+	CALL strcpy(buf1, av[1])
+	CALL buf2
 	RETURN
 END
